@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A2 English Grammar Master - Sentence Unscramble Exercise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .word-chip {
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .word-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen text-slate-800 font-sans flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-indigo-100 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">GrammarMaster A2</h1>
+                    <p class="text-xs text-slate-500 font-medium">Top Notch 2 Vocabulary & Grammar Integration</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                <div class="flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100">
+                    <i class="fa-regular fa-clock text-indigo-600"></i>
+                    <span id="timer" class="font-mono font-semibold text-sm text-indigo-700">00:00</span>
+                </div>
+                <div class="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100">
+                    <i class="fa-solid fa-star text-amber-500"></i>
+                    <span id="score-display" class="font-bold text-sm text-amber-700">Score: 0 / 50</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
+        
+        <!-- Intro Screen -->
+        <div id="intro-screen" class="bg-white rounded-2xl shadow-xl border border-indigo-50 p-6 sm:p-10 text-center space-y-6">
+            <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
+                <i class="fa-solid fa-puzzle-piece"></i>
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-2xl sm:text-3xl font-ext500 text-slate-800">Sentence Unscramble Challenge</h2>
+                <p class="text-slate-600 max-w-xl mx-auto text-sm sm:text-base">
+                    Test your English grammar (A2 level) by arranging jumbled words into correct questions. Practice tenses, passive voice, infinitives, gerunds, and key vocabulary from Top Notch 2!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-xl mx-auto bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-600">
+                <div class="space-y-1.5">
+                    <p class="font-semibold text-slate-700"><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Structures:</p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-500">
+                        <li>Verb + to-infinitive / gerund</li>
+                        <li>Used to / Didn't use to + Verb</li>
+                    </ul>
+                </div>
+                <div class="space-y-1.5">
+                    <p class="font-semibold text-slate-700"><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Tenses & Topics:</p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-500">
+                        <li>Simple, Continuous, Perfect & Passive</li>
+                        <li>Arts, Driving, Cyber Space, Ethics, etc.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg hover:shadow-indigo-200 transition-all text-base inline-flex items-center gap-3 group">
+                <span>Start 50-Question Exercise</span>
+                <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
+
+        <!-- Quiz Screen (Hidden initially) -->
+        <div id="quiz-screen" class="hidden space-y-6">
+            
+            <!-- Progress & Topic Bar -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <span id="question-badge" class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Question 1 of 50</span>
+                    <span id="topic-badge" class="bg-slate-100 text-slate-600 text-xs font-medium px-3 py-1 rounded-full"><i class="fa-solid fa-tag mr-1.5 text-indigo-500"></i> Topic</span>
+                </div>
+                <div class="w-full sm:w-48 bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div id="progress-bar" class="bg-indigo-600 h-full transition-all duration-300" style="width: 2%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-2xl shadow-xl border border-indigo-50 p-6 sm:p-8 space-y-6">
+                
+                <!-- Instruction -->
+                <div class="flex items-start gap-3">
+                    <div class="bg-indigo-50 text-indigo-600 p-2 rounded-lg mt-0.5">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Unscramble the words to form a correct question:</h3>
+                        <p class="text-xs text-indigo-600 font-medium mt-0.5" id="grammar-focus-tag">Grammar Focus</p>
+                    </div>
+                </div>
+
+                <!-- Answer Drop Zone Container -->
+                <div class="space-y-3">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase">Your Sentence Preview:</label>
+                    <div id="drop-zone" class="min-h-[85px] p-4 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl flex flex-wrap items-center gap-2.5 transition-colors">
+                        <span id="drop-placeholder" class="text-slate-400 text-sm italic">Tap or drag words below to build your sentence...</span>
+                    </div>
+                </div>
+
+                <!-- Word Bank Container -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase">Available Words:</label>
+                        <button onclick="resetCurrentQuestion()" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-lg transition-colors">
+                            <i class="fa-solid fa-rotate-right"></i> Reset Words
+                        </button>
+                    </div>
+                    <div id="word-bank" class="min-h-[90px] p-4 bg-indigo-50/40 border border-indigo-100 rounded-xl flex flex-wrap items-center gap-2.5">
+                        <!-- Word chips will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Feedback / Rationale Container -->
+                <div id="feedback-container" class="hidden p-4 rounded-xl border text-sm space-y-2 animate-fadeIn">
+                    <div id="feedback-header" class="font-bold flex items-center gap-2">
+                        <!-- Correct/Incorrect icon & text -->
+                    </div>
+                    <p id="feedback-rationale" class="text-slate-600 text-xs sm:text-sm"></p>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                    <button onclick="showHint()" id="hint-btn" class="text-slate-500 hover:text-indigo-600 text-xs sm:text-sm font-medium flex items-center gap-2 transition-colors">
+                        <i class="fa-regular fa-lightbulb text-amber-500 text-base"></i> Show Hint
+                    </button>
+                    
+                    <div class="flex gap-3">
+                        <button id="check-btn" onclick="checkAnswer()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md hover:shadow-indigo-200 transition-all text-sm flex items-center gap-2">
+                            <span>Check Answer</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button id="next-btn" onclick="nextQuestion()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md hover:shadow-emerald-200 transition-all text-sm flex items-center gap-2">
+                            <span>Next Question</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Result Screen (Hidden initially) -->
+        <div id="result-screen" class="hidden bg-white rounded-2xl shadow-xl border border-indigo-50 p-8 text-center space-y-6">
+            <div class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
+                <i class="fa-solid fa-award"></i>
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-3xl font-bold text-slate-800">Exercise Completed!</h2>
+                <p class="text-slate-600">Great job practicing A2 English Grammar and Top Notch 2 vocabulary.</p>
+            </div>
+
+            <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl max-w-sm mx-auto space-y-2">
+                <p class="text-xs font-semibold text-indigo-500 uppercase tracking-wide">Final Score</p>
+                <p id="final-score" class="text-4xl font-ext500 text-indigo-700">0 / 50</p>
+                <p id="final-feedback-msg" class="text-sm text-slate-600 font-medium"></p>
+            </div>
+
+            <div class="flex justify-center gap-4 pt-4">
+                <button onclick="restartQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transition-all text-sm inline-flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> Try Again
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-100 bg-white/50 mt-12">
+        <p>A2 English Grammar & Vocabulary Exercise &bull; Based on Top Notch 2 Curriculum</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        const questions = [
+            // Arts and Crafts
+            {
+                words: ["What", "did", "she", "prefer", "to", "exhibit", "at", "the", "gallery"],
+                correct: "What did she prefer to exhibit at the gallery?",
+                topic: "Arts and Crafts",
+                focus: "Simple Past | Verb + to-infinitive",
+                hint: "Start with the question word 'What', followed by auxiliary verb 'did'."
+            },
+            {
+                words: ["Who", "creates", "those", "traditional", "pottery", "sculptures", "in", "the", "exhibit"],
+                correct: "Who creates those traditional pottery sculptures in the exhibit?",
+                topic: "Arts and Crafts",
+                focus: "Simple Present",
+                hint: "Begin with 'Who' as the subject."
+            },
+            {
+                words: ["Was", "the", "silver", "necklace", "carved", "by", "a", "local", "artisan"],
+                correct: "Was the silver necklace carved by a local artisan?",
+                topic: "Arts and Crafts",
+                focus: "Simple Past Passive",
+                hint: "Begin with the auxiliary verb 'Was' for passive formation."
+            },
+            {
+                words: ["Are", "handmade", "pottery", "bowls", "sold", "in", "that", "art", "shop"],
+                correct: "Are handmade pottery bowls sold in that art shop?",
+                topic: "Arts and Crafts",
+                focus: "Simple Present Passive",
+                hint: "Form a passive question starting with 'Are'."
+            },
+            {
+                words: ["Did", "the", "weavers", "enjoy", "making", "the", "colorful", "rugs"],
+                correct: "Did the weavers enjoy making the colorful rugs?",
+                topic: "Arts and Crafts",
+                focus: "Simple Past | Verb + Gerund",
+                hint: "Use 'enjoy' followed by the gerund 'making'."
+            },
+            {
+                words: ["What", "kind", "of", "jade", "jewelry", "is", "being", "crafted", "now"],
+                correct: "What kind of jade jewelry is being crafted now?",
+                topic: "Arts and Crafts",
+                focus: "Present Continuous Passive",
+                hint: "Use 'is being crafted' for the passive continuous structure."
+            },
+            {
+                words: ["Did", "you", "use", "to", "carve", "wooden", "statues", "in", "your", "youth"],
+                correct: "Did you use to carve wooden statues in your youth?",
+                topic: "Arts and Crafts",
+                focus: "Didn't / Did use to + Verb",
+                hint: "Use the structure 'Did you use to + verb'."
+            },
+            {
+                words: ["What", "did", "the", "sculptor", "prefer", "to", "mold", "with", "beeswax"],
+                correct: "What did the sculptor prefer to mold with beeswax?",
+                topic: "Arts and Crafts",
+                focus: "Simple Past | Verb + to-infinitive",
+                hint: "Combine 'prefer' with 'to mold'."
+            },
+
+            // Personal Care and Appearance
+            {
+                words: ["Why", "did", "she", "cancel", "her", "haircut", "appointment", "yesterday"],
+                correct: "Why did she cancel her haircut appointment yesterday?",
+                topic: "Personal Care and Appearance",
+                focus: "Simple Past",
+                hint: "Start with 'Why did she...'."
+            },
+            {
+                words: ["Does", "he", "use", "shampoo", "and", "deodorant", "after", "every", "workout"],
+                correct: "Does he use shampoo and deodorant after every workout?",
+                topic: "Personal Care and Appearance",
+                focus: "Simple Present",
+                hint: "Form a question starting with 'Does'."
+            },
+            {
+                words: ["Were", "facials", "and", "manicures", "offered", "at", "the", "new", "salon"],
+                correct: "Were facials and manicures offered at the new salon?",
+                topic: "Personal Care and Appearance",
+                focus: "Simple Past Passive",
+                hint: "Start with 'Were' for plural passive form."
+            },
+            {
+                words: ["What", "cosmetic", "surgery", "was", "performed", "by", "the", "surgeon"],
+                correct: "What cosmetic surgery was performed by the surgeon?",
+                topic: "Personal Care and Appearance",
+                focus: "Simple Past Passive",
+                hint: "Use 'was performed' for the past passive voice."
+            },
+            {
+                words: ["Did", "you", "use", "to", "dislike", "using", "sunscreen", "in", "your", "youth"],
+                correct: "Did you use to dislike using sunscreen in your youth?",
+                topic: "Personal Care and Appearance",
+                focus: "Used to + Verb",
+                hint: "Notice 'dislike using' combining verb structures."
+            },
+            {
+                words: ["Is", "liposuction", "being", "considered", "to", "improve", "appearance"],
+                correct: "Is liposuction being considered to improve appearance?",
+                topic: "Personal Care and Appearance",
+                focus: "Present Continuous Passive",
+                hint: "Start with 'Is ... being considered'."
+            },
+            {
+                words: ["What", "hair", "products", "do", "you", "prefer", "to", "buy"],
+                correct: "What hair products do you prefer to buy?",
+                topic: "Personal Care and Appearance",
+                focus: "Simple Present | Verb + to-infinitive",
+                hint: "Follow 'prefer' with 'to buy'."
+            },
+            {
+                words: ["Who", "didn't", "use", "to", "wear", "makeup", "to", "parties"],
+                correct: "Who didn't use to wear makeup to parties?",
+                topic: "Personal Care and Appearance",
+                focus: "Didn't use to + Verb",
+                hint: "Use 'Didn't use to' for past habits."
+            },
+
+            // Cars and Driving
+            {
+                words: ["Why", "was", "the", "speed", "limit", "ignored", "by", "that", "driver"],
+                correct: "Why was the speed limit ignored by that driver?",
+                topic: "Cars and Driving",
+                focus: "Simple Past Passive",
+                hint: "Use 'was ignored' for passive voice."
+            },
+            {
+                words: ["Did", "you", "see", "the", "car", "crash", "near", "the", "traffic", "light"],
+                correct: "Did you see the car crash near the traffic light?",
+                topic: "Cars and Driving",
+                focus: "Simple Past",
+                hint: "Begin with 'Did you see...'."
+            },
+            {
+                words: ["Are", "seat", "belts", "worn", "by", "all", "passengers", "in", "rentals"],
+                correct: "Are seat belts worn by all passengers in rentals?",
+                topic: "Cars and Driving",
+                focus: "Simple Present Passive",
+                hint: "Start with 'Are seat belts worn...'."
+            },
+            {
+                words: ["What", "was", "the", "driver", "doing", "before", "the", "collision", "occurred"],
+                correct: "What was the driver doing before the collision occurred?",
+                topic: "Cars and Driving",
+                focus: "Past Continuous",
+                hint: "Use 'was doing' for past continuous."
+            },
+            {
+                words: ["Did", "you", "use", "to", "drive", "a", "compact", "car", "or", "an", "SUV"],
+                correct: "Did you use to drive a compact car or an SUV?",
+                topic: "Cars and Driving",
+                focus: "Used to + Verb",
+                hint: "Form a question with 'Did you use to drive'."
+            },
+            {
+                words: ["Has", "the", "damaged", "windshield", "been", "replaced", "yet"],
+                correct: "Has the damaged windshield been replaced yet?",
+                topic: "Cars and Driving",
+                focus: "Present Perfect Passive",
+                hint: "Use 'Has ... been replaced' for present perfect passive."
+            },
+            {
+                words: ["Why", "do", "some", "drivers", "prefer", "to", "text", "while", "driving"],
+                correct: "Why do some drivers prefer to text while driving?",
+                topic: "Cars and Driving",
+                focus: "Simple Present | Verb + to-infinitive",
+                hint: "Combine 'prefer' with 'to text'."
+            },
+            {
+                words: ["Was", "the", "headlight", "repaired", "by", "the", "mechanic", "yesterday"],
+                correct: "Was the headlight repaired by the mechanic yesterday?",
+                topic: "Cars and Driving",
+                focus: "Simple Past Passive",
+                hint: "Start with 'Was the headlight repaired...'."
+            },
+
+            // Eating well
+            {
+                words: ["What", "foods", "did", "you", "avoid", "eating", "on", "the", "Atkins", "diet"],
+                correct: "What foods did you avoid eating on the Atkins diet?",
+                topic: "Eating well",
+                focus: "Simple Past | Verb + Gerund",
+                hint: "Follow 'avoid' with the gerund 'eating'."
+            },
+            {
+                words: ["Are", "dairy", "products", "consumed", "by", "strict", "vegans"],
+                correct: "Are dairy products consumed by strict vegans?",
+                topic: "Eating well",
+                focus: "Simple Present Passive",
+                hint: "Start with 'Are dairy products consumed...'."
+            },
+            {
+                words: ["What", "ingredients", "are", "used", "to", "make", "sushi", "rolls"],
+                correct: "What ingredients are used to make sushi rolls?",
+                topic: "Eating well",
+                focus: "Simple Present Passive",
+                hint: "Use 'are used to make' for the passive voice."
+            },
+            {
+                words: ["Were", "salads", "being", "served", "when", "you", "arrived", "at", "dinner"],
+                correct: "Were salads being served when you arrived at dinner?",
+                topic: "Eating well",
+                focus: "Past Continuous Passive",
+                hint: "Use 'Were ... being served' for past continuous passive."
+            },
+            {
+                words: ["Did", "you", "use", "to", "dislike", "eating", "broccoli", "and", "spinach"],
+                correct: "Did you use to dislike eating broccoli and spinach?",
+                topic: "Eating well",
+                focus: "Used to + Verb",
+                hint: "Combine 'Did you use to' with 'dislike eating'."
+            },
+            {
+                words: ["Has", "a", "new", "diet", "plan", "been", "recommended", "by", "the", "researcher"],
+                correct: "Has a new diet plan been recommended by the researcher?",
+                topic: "Eating well",
+                focus: "Present Perfect Passive",
+                hint: "Start with 'Has a new diet plan been...'."
+            },
+            {
+                words: ["Why", "did", "she", "decline", "to", "taste", "the", "spicy", "octopus", "soup"],
+                correct: "Why did she decline to taste the spicy octopus soup?",
+                topic: "Eating well",
+                focus: "Simple Past | Verb + to-infinitive",
+                hint: "Follow 'decline' with 'to taste'."
+            },
+            {
+                words: ["What", "healthy", "snacks", "were", "brought", "to", "the", "picnic"],
+                correct: "What healthy snacks were brought to the picnic?",
+                topic: "Eating well",
+                focus: "Simple Past Passive",
+                hint: "Use 'were brought' for past passive."
+            },
+
+            // Personality
+            {
+                words: ["Who", "is", "considered", "an", "extrovert", "by", "the", "psychologist"],
+                correct: "Who is considered an extrovert by the psychologist?",
+                topic: "Personality",
+                focus: "Simple Present Passive",
+                hint: "Use 'is considered' for present passive."
+            },
+            {
+                words: ["Did", "you", "use", "to", "be", "shy", "in", "your", "childhood"],
+                correct: "Did you use to be shy in your childhood?",
+                topic: "Personality",
+                focus: "Used to + Verb",
+                hint: "Start with 'Did you use to be...'."
+            },
+            {
+                words: ["What", "traits", "are", "inherited", "from", "parents", "biologically"],
+                correct: "What traits are inherited from parents biologically?",
+                topic: "Personality",
+                focus: "Simple Present Passive",
+                hint: "Use 'are inherited' for present passive."
+            },
+            {
+                words: ["Were", "you", "feeling", "depressed", "when", "the", "controversy", "started"],
+                correct: "Were you feeling depressed when the controversy started?",
+                topic: "Personality",
+                focus: "Past Continuous",
+                hint: "Use 'Were you feeling' for past continuous."
+            },
+            {
+                words: ["Why", "did", "he", "refuse", "to", "apologize", "for", "his", "temper"],
+                correct: "Why did he refuse to apologize for his temper?",
+                topic: "Personality",
+                focus: "Simple Past | Verb + to-infinitive",
+                hint: "Follow 'refuse' with 'to apologize'."
+            },
+            {
+                words: ["Have", "any", "personality", "tests", "been", "conducted", "today"],
+                correct: "Have any personality tests been conducted today?",
+                topic: "Personality",
+                focus: "Present Perfect Passive",
+                hint: "Start with 'Have any personality tests been...'."
+            },
+            {
+                words: ["What", "makes", "an", "introvert", "enjoy", "socializing", "with", "acquaintances"],
+                correct: "What makes an introvert enjoy socializing with acquaintances?",
+                topic: "Personality",
+                focus: "Simple Present | Verb + Gerund",
+                hint: "Follow 'enjoy' with the gerund 'socializing'."
+            },
+            {
+                words: ["Didn't", "she", "use", "to", "oppose", "public", "criticism"],
+                correct: "Didn't she use to oppose public criticism?",
+                topic: "Personality",
+                focus: "Didn't use to + Verb",
+                hint: "Start with 'Didn't she use to...'."
+            },
+
+            // Living in Cyber Space
+            {
+                words: ["What", "files", "were", "uploaded", "to", "the", "cloud", "yesterday"],
+                correct: "What files were uploaded to the cloud yesterday?",
+                topic: "Living in Cyber Space",
+                focus: "Simple Past Passive",
+                hint: "Use 'were uploaded' for past passive."
+            },
+            {
+                words: ["Is", "malware", "being", "blocked", "by", "the", "security", "toolbar"],
+                correct: "Is malware being blocked by the security toolbar?",
+                topic: "Living in Cyber Space",
+                focus: "Present Continuous Passive",
+                hint: "Use 'Is ... being blocked' for present continuous passive."
+            },
+            {
+                words: ["Did", "you", "use", "to", "edit", "documents", "using", "pull-down", "menus"],
+                correct: "Did you use to edit documents using pull-down menus?",
+                topic: "Living in Cyber Space",
+                focus: "Used to + Verb",
+                hint: "Start with 'Did you use to edit...'."
+            },
+            {
+                words: ["Who", "was", "tricked", "by", "the", "phishing", "email"],
+                correct: "Who was tricked by the phishing email?",
+                topic: "Living in Cyber Space",
+                focus: "Simple Past Passive",
+                hint: "Use 'was tricked' for past passive."
+            },
+            {
+                words: ["What", "software", "did", "you", "install", "to", "troubleshoot", "the", "network"],
+                correct: "What software did you install to troubleshoot the network?",
+                topic: "Living in Cyber Space",
+                focus: "Simple Past | Verb + to-infinitive",
+                hint: "Follow 'install' with 'to troubleshoot'."
+            },
+            {
+                words: ["Has", "your", "user", "profile", "been", "updated", "online"],
+                correct: "Has your user profile been updated online?",
+                topic: "Living in Cyber Space",
+                focus: "Present Perfect Passive",
+                hint: "Start with 'Has your user profile been...'."
+            },
+            {
+                words: ["Why", "are", "attachments", "scanned", "for", "viruses", "automatically"],
+                correct: "Why are attachments scanned for viruses automatically?",
+                topic: "Living in Cyber Space",
+                focus: "Simple Present Passive",
+                hint: "Use 'are scanned' for present passive."
+            },
+            {
+                words: ["Were", "you", "scrolling", "through", "social", "media", "when", "it", "froze"],
+                correct: "Were you scrolling through social media when it froze?",
+                topic: "Living in Cyber Space",
+                focus: "Past Continuous",
+                hint: "Use 'Were you scrolling' for past continuous."
+            },
+
+            // Ethics and Values
+            {
+                words: ["What", "values", "are", "taught", "to", "youngsters", "at", "school"],
+                correct: "What values are taught to youngsters at school?",
+                topic: "Ethics and Values",
+                focus: "Simple Present Passive",
+                hint: "Use 'are taught' for present passive."
+            },
+            {
+                words: ["Did", "you", "use", "to", "obey", "ethical", "principles", "strictly"],
+                correct: "Did you use to obey ethical principles strictly?",
+                topic: "Ethics and Values",
+                focus: "Used to + Verb",
+                hint: "Start with 'Did you use to obey...'."
+            },
+            {
+                words: ["Who", "was", "convicted", "of", "committing", "violent", "crimes"],
+                correct: "Who was convicted of committing violent crimes?",
+                topic: "Ethics and Values",
+                focus: "Simple Past Passive | Verb + Gerund",
+                hint: "Notice 'convicted of committing'."
+            },
+            {
+                words: ["Are", "punishments", "faced", "by", "those", "who", "break", "laws"],
+                correct: "Are punishments faced by those who break laws?",
+                topic: "Ethics and Values",
+                focus: "Simple Present Passive",
+                hint: "Start with 'Are punishments faced...'."
+            },
+            {
+                words: ["Why", "did", "the", "committee", "oppose", "changing", "the", "rules"],
+                correct: "Why did the committee oppose changing the rules?",
+                topic: "Ethics and Values",
+                focus: "Simple Past | Verb + Gerund",
+                hint: "Follow 'oppose' with the gerund 'changing'."
+            },
+            {
+                words: ["Have", "strict", "laws", "against", "child", "abuse", "been", "passed"],
+                correct: "Have strict laws against child abuse been passed?",
+                topic: "Ethics and Values",
+                focus: "Present Perfect Passive",
+                hint: "Start with 'Have strict laws ... been passed?'."
+            }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let timerInterval = null;
+        let secondsElapsed = 0;
+        let userSelectedWords = [];
+        let availableWordsPool = [];
+        let isAnswerChecked = false;
+
+        function startQuiz() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            
+            score = 0;
+            currentIdx = 0;
+            secondsElapsed = 0;
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+                const secs = (secondsElapsed % 60).toString().padStart(2, '0');
+                document.getElementById('timer').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            isAnswerChecked = false;
+            const q = questions[currentIdx];
+            
+            // Update badges & progress
+            document.getElementById('question-badge').innerText = `Question ${currentIdx + 1} of ${questions.length}`;
+            document.getElementById('topic-badge').innerHTML = `<i class="fa-solid fa-tag mr-1.5 text-indigo-500"></i> ${q.topic}`;
+            document.getElementById('grammar-focus-tag').innerText = `Focus: ${q.focus}`;
+            
+            const progressPct = ((currentIdx + 1) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPct}%`;
+
+            // Reset zones
+            userSelectedWords = [];
+            // Shuffle words for the word bank
+            availableWordsPool = [...q.words].sort(() => Math.random() - 0.5);
+
+            renderWords();
+            
+            // Reset feedback and buttons
+            document.getElementById('feedback-container').classList.add('hidden');
+            document.getElementById('check-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('hint-btn').style.display = 'inline-flex';
+        }
+
+        function renderWords() {
+            const dropZone = document.getElementById('drop-zone');
+            const wordBank = document.getElementById('word-bank');
+
+            // Render drop zone
+            if (userSelectedWords.length === 0) {
+                dropZone.innerHTML = `<span id="drop-placeholder" class="text-slate-400 text-sm italic">Tap or click words below to build your sentence...</span>`;
+            } else {
+                dropZone.innerHTML = '';
+                userSelectedWords.forEach((item, idx) => {
+                    const chip = document.createElement('button');
+                    chip.className = `word-chip bg-indigo-600 text-white px-3.5 py-2 rounded-xl text-sm font-semibold shadow-sm flex items-center gap-2 hover:bg-indigo-700`;
+                    chip.innerHTML = `<span>${item.word}</span> <i class="fa-solid fa-xmark text-xs opacity-70"></i>`;
+                    chip.onclick = () => removeWordFromSelection(idx);
+                    dropZone.appendChild(chip);
+                });
+            }
+
+            // Render word bank
+            if (availableWordsPool.length === 0) {
+                wordBank.innerHTML = `<span class="text-slate-400 text-xs italic p-2">All words placed! Check your answer.</span>`;
+            } else {
+                wordBank.innerHTML = '';
+                availableWordsPool.forEach((word, idx) => {
+                    const chip = document.createElement('button');
+                    chip.className = `word-chip bg-white border border-indigo-200 text-indigo-700 px-3.5 py-2 rounded-xl text-sm font-medium shadow-sm hover:border-indigo-400 hover:bg-indigo-50/50`;
+                    chip.innerText = word;
+                    chip.onclick = () => addWordToSelection(idx);
+                    wordBank.appendChild(chip);
+                });
+            }
+        }
+
+        function addWordToSelection(bankIdx) {
+            if (isAnswerChecked) return;
+            const word = availableWordsPool.splice(bankIdx, 1)[0];
+            userSelectedWords.push({ word, originalBankIdx: bankIdx });
+            renderWords();
+        }
+
+        function removeWordFromSelection(selectedIdx) {
+            if (isAnswerChecked) return;
+            const removed = userSelectedWords.splice(selectedIdx, 1)[0];
+            availableWordsPool.push(removed.word);
+            renderWords();
+        }
+
+        function resetCurrentQuestion() {
+            if (isAnswerChecked) return;
+            loadQuestion();
+        }
+
+        function showHint() {
+            const q = questions[currentIdx];
+            const feedbackContainer = document.getElementById('feedback-container');
+            const feedbackHeader = document.getElementById('feedback-header');
+            const feedbackRationale = document.getElementById('feedback-rationale');
+
+            feedbackContainer.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+            feedbackContainer.classList.add('bg-amber-50', 'border-amber-200');
+            
+            feedbackHeader.innerHTML = `<i class="fa-regular fa-lightbulb text-amber-600"></i> <span class="text-amber-800">Hint</span>`;
+            feedbackRationale.className = "text-amber-900 text-xs sm:text-sm";
+            feedbackRationale.innerText = q.hint;
+        }
+
+        function checkAnswer() {
+            if (userSelectedWords.length === 0) return;
+            isAnswerChecked = true;
+
+            const userSentence = userSelectedWords.map(i => i.word).join(' ');
+            // Normalize punctuation check
+            const q = questions[currentIdx];
+            // Remove ending question mark for clean comparison if needed, or compare exact strings
+            const cleanUser = userSentence.replace(/[?.,!]/g, '').trim().toLowerCase();
+            const cleanCorrect = q.correct.replace(/[?.,!]/g, '').trim().toLowerCase();
+
+            const isCorrect = cleanUser === cleanCorrect;
+            
+            if (isCorrect) {
+                score++;
+                document.getElementById('score-display').innerText = `Score: ${score} / 50`;
+            }
+
+            const feedbackContainer = document.getElementById('feedback-container');
+            const feedbackHeader = document.getElementById('feedback-header');
+            const feedbackRationale = document.getElementById('feedback-rationale');
+
+            feedbackContainer.classList.remove('hidden', 'bg-amber-50', 'border-amber-200');
+
+            if (isCorrect) {
+                feedbackContainer.classList.add('bg-emerald-50', 'border-emerald-200');
+                feedbackHeader.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> <span class="text-emerald-800">Correct! Great job!</span>`;
+                feedbackRationale.className = "text-emerald-900 text-xs sm:text-sm";
+                feedbackRationale.innerText = `Correct sentence: "${q.correct}"`;
+            } else {
+                feedbackContainer.classList.add('bg-rose-50', 'border-rose-200');
+                feedbackHeader.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600"></i> <span class="text-rose-800">Not quite right.</span>`;
+                feedbackRationale.className = "text-rose-900 text-xs sm:text-sm";
+                feedbackRationale.innerHTML = `Correct sentence should be: <strong class="font-semibold">"${q.correct}"</strong>`;
+            }
+
+            document.getElementById('check-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+            document.getElementById('hint-btn').style.display = 'none';
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < questions.length) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = `${score} / 50`;
+            
+            let msg = "";
+            const pct = (score / 50) * 100;
+            if (pct >= 90) msg = "Outstanding! You've mastered A2 English Grammar and Top Notch 2 vocabulary!";
+            else if (pct >= 70) msg = "Great work! You have a solid understanding of the structures and tenses.";
+            else if (pct >= 50) msg = "Good effort! Review the Top Notch 2 units to sharpen your grammar skills further.";
+            else {envelope = "Keep practicing! Take your time with verb structures and passive voice rules."; msg = envelope;}
+            
+            document.getElementById('final-feedback-msg').innerText = msg;
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
+```eof
+
+### Summary of the Application:
+* **Interactive 50-Question Exercise:** Covers all requested A2 grammar structures (Verb + to-infinitive/gerund, used to, didn't use to, simple/continuous/perfect tenses, and passive voice) integrated seamlessly with vocabulary from Top Notch 2 (Arts and Crafts, Personal Care, Driving, Eating well, Personality, Cyber Space, Ethics and Values).
+* **Engaging Word-Unscramble Mechanics:** Students click or tap jumbled word chips to assemble them into correct questions in real time.
+* **Supportive Features:** Includes live timer, score tracker, progress bar, hints, and immediate corrective feedback with correct sentence reveals.
+
+Enjoy using this interactive web app for your A2 English grammar practice!
